@@ -1,0 +1,7 @@
+flask
+flask-cors
+python-docx
+pdf2docx
+werkzeug
+pandas
+openpyxl

@@ -1,0 +1,194 @@
+# Agastya Document Processing Suite - Git Ignore
+
+# ==============================================================================
+# DEPENDENCIES
+# ==============================================================================
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==============================================================================
+# BUILD OUTPUTS
+# ==============================================================================
+
+# Frontend builds
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.cache/
+
+# Backend builds
+backend/build/
+backend/dist/
+
+# ==============================================================================
+# UPLOADS & TEMPORARY FILES
+# ==============================================================================
+
+# User uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+uploads/*
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==============================================================================
+# DEPLOYMENT PACKAGES
+# ==============================================================================
+
+# Docker images & deployment packages
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+agastya-*.tar*
+agastya-*.zip
+
+# ==============================================================================
+# IDE & EDITOR
+# ==============================================================================
+
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ==============================================================================
+# ENVIRONMENT & CONFIGURATION
+# ==============================================================================
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Configuration (keep backend/config.json for defaults)
+backend/config.json
+config.json
+
+# ==============================================================================
+# TESTING
+# ==============================================================================
+
+# Test coverage
+coverage/
+.nyc_output/
+*.coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ==============================================================================
+# OS SPECIFIC
+# ==============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ==============================================================================
+# PROJECT SPECIFIC
+# ==============================================================================
+
+# Unwanted files moved during cleanup
+unwanted/
+
+# Old version folders
+version1.0/
+version2.0/
+
+# Documentation drafts
+*.draft.md
+NOTES.md
+
+# ==============================================================================
+# DOCKER
+# ==============================================================================
+
+# Docker volumes
+docker-volumes/
+
+# ==============================================================================
+# MISC
+# ==============================================================================
+
+# Logs
+logs/
+*.log
+
+# Lock files
+*.lock

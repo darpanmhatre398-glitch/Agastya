@@ -1,0 +1,216 @@
+================================================================================
+  AGASTYA DOCUMENT PROCESSING SUITE - DOCKER DEPLOYMENT INSTRUCTIONS
+================================================================================
+
+📦 DEPLOYMENT PACKAGE: agastya-docker-deployment-20251126_102036.tar (363 MB)
+
+================================================================================
+  PREREQUISITES
+================================================================================
+
+1. Docker installed and running on target server
+   - Linux: sudo systemctl start docker
+   - Windows: Start Docker Desktop
+   - macOS: Start Docker Desktop
+
+2. Docker Compose installed (v2.0+)
+   - Check version: docker-compose --version
+
+3. Required ports available:
+   - Port 3456 (Frontend)
+   - Port 8765 (Backend API)
+
+================================================================================
+  DEPLOYMENT STEPS
+================================================================================
+
+STEP 1: TRANSFER FILES TO SERVER
+---------------------------------
+Copy these files to your server:
+  • agastya-docker-deployment-20251126_102036.tar
+  • docker-compose.yml
+
+Example using SCP:
+  scp agastya-docker-deployment-20251126_102036.tar user@server:/opt/agastya/
+  scp docker-compose.yml user@server:/opt/agastya/
+
+
+STEP 2: LOAD DOCKER IMAGES
+---------------------------
+On the server, navigate to deployment directory:
+  cd /opt/agastya/
+
+Load the Docker images:
+  docker load -i agastya-docker-deployment-20251126_102036.tar
+
+Verify images loaded:
+  docker images | grep react-app
+
+
+STEP 3: START SERVICES
+-----------------------
+Start the containers in detached mode:
+  docker-compose up -d
+
+Check container status:
+  docker-compose ps
+
+View logs (if needed):
+  docker-compose logs -f
+
+
+STEP 4: VERIFY DEPLOYMENT
+--------------------------
+Check if services are running:
+  curl http://localhost:8765/api/admin/features
+  curl http://localhost:3456
+
+Access the application:
+  Frontend: http://your-server-ip:3456
+  Backend API: http://your-server-ip:8765
+
+
+================================================================================
+  AVAILABLE TOOLS IN THE APPLICATION
+================================================================================
+
+✓ Doc Splitter - Split DOCX by headings
+✓ Doc Splitter V2 - Enhanced document splitting
+✓ Excel Generator - Generate Excel templates from filenames
+✓ Excel Renamer - Batch rename files using Excel mapping
+✓ File Renamer - Pattern-based file renaming
+✓ ICN Generator - Create ICN-tagged images
+✓ ICN Extractor - Extract images from DOCX
+✓ ICN Validator - Validate ICN references
+✓ DOCX to ADOC - Convert Word to AsciiDoc
+✓ ADOC to XML - Convert to S1000D XML
+✓ PDF to DOCX - Convert PDF to Word
+✓ DM Code Generator - Generate S1000D data module codes
+
+
+================================================================================
+  MANAGEMENT COMMANDS
+================================================================================
+
+STOP SERVICES:
+  docker-compose down
+
+RESTART SERVICES:
+  docker-compose restart
+
+VIEW LOGS:
+  docker-compose logs -f backend
+  docker-compose logs -f frontend
+
+UPDATE CONFIGURATION:
+  # Edit config.json for backend features
+  docker-compose restart backend
+
+CHECK RESOURCE USAGE:
+  docker stats
+
+
+================================================================================
+  TROUBLESHOOTING
+================================================================================
+
+ISSUE: Port already in use
+SOLUTION: 
+  # Find process using port
+  netstat -ano | findstr :3456
+  netstat -ano | findstr :8765
+  # Kill process or change ports in docker-compose.yml
+
+ISSUE: Containers not starting
+SOLUTION:
+  docker-compose logs
+  # Check for errors and ensure all images loaded correctly
+
+ISSUE: Backend errors
+SOLUTION:
+  # Check backend logs
+  docker-compose logs backend
+  # Ensure config.json exists and is valid
+
+ISSUE: Frontend can't reach backend
+SOLUTION:
+  # Check network connectivity
+  docker network inspect react-app_agastya-network
+  # Ensure backend is healthy: docker-compose ps
+
+
+================================================================================
+  PRODUCTION RECOMMENDATIONS
+================================================================================
+
+1. REVERSE PROXY:
+   Use Nginx or Traefik as reverse proxy with SSL/TLS
+   
+2. ENVIRONMENT VARIABLES:
+   Set production environment variables in docker-compose.yml
+   
+3. BACKUPS:
+   Regularly backup:
+   - backend/config.json (feature configuration)
+   - backend/uploads/ (user uploaded files)
+   
+4. MONITORING:
+   Set up health check monitoring and alerts
+   
+5. SECURITY:
+   - Enable firewall rules
+   - Use strong admin passwords
+   - Implement rate limiting
+   - Keep Docker and images updated
+
+
+================================================================================
+  FILE STRUCTURE AFTER DEPLOYMENT
+================================================================================
+
+/opt/agastya/
+├── agastya-docker-deployment-20251126_102036.tar
+├── docker-compose.yml
+└── (Docker volumes created automatically)
+
+
+================================================================================
+  SUPPORT & CONFIGURATION
+================================================================================
+
+Admin Panel: http://your-server:3456/admin
+- Toggle features on/off
+- Configure available tools
+- Manage application settings
+
+Backend API Documentation:
+- Features endpoint: GET /api/admin/features
+- Update features: POST /api/admin/features
+
+
+================================================================================
+  UNINSTALL
+================================================================================
+
+To completely remove the application:
+
+1. Stop and remove containers:
+   docker-compose down -v
+
+2. Remove images:
+   docker rmi react-app-frontend react-app-backend
+
+3. Remove deployment files:
+   rm -rf /opt/agastya/
+
+
+================================================================================
+  VERSION INFORMATION
+================================================================================
+
+Build Date: November 26, 2025
+Frontend: Vite 5.1.0 + React 18.3.1 + Tailwind CSS 3.4.1
+Backend: Flask + Python 3.11 + Gunicorn
+Ports: Frontend (3456), Backend (8765)
+
+================================================================================

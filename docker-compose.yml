@@ -1,0 +1,48 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agastya-backend
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./backend/config.json:/app/config.json
+      - ./backend/uploads:/app/uploads
+      - backend_temp:/tmp
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - agastya-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/api/admin/features"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agastya-frontend
+    ports:
+      - "3456:3456"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - agastya-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3456"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  agastya-network:
+    driver: bridge
+
+volumes:
+  backend_temp:
