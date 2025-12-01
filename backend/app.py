@@ -96,6 +96,12 @@ def docx_to_s1000d():
         if len(files) == 1 and files[0].filename == '':
             return jsonify({'error': 'No file selected'}), 400
         
+        # Get document type from form data
+        # 'proced' for procedural, 'descript' for descriptive, 'auto' for auto-detect
+        doc_type = request.form.get('doc_type', 'auto')
+        if doc_type == 'auto':
+            doc_type = None  # None triggers auto-detection in converter
+        
         # Create temp directories with unique names to avoid conflicts
         import uuid
         unique_id = str(uuid.uuid4())[:8]
@@ -113,7 +119,7 @@ def docx_to_s1000d():
                 file.save(input_path)
                 
                 output_path = os.path.join(output_dir, filename.replace('.docx', '.adoc'))
-                success, message = convert_docx_to_s1000d(input_path, output_path)
+                success, message = convert_docx_to_s1000d(input_path, output_path, doc_type)
                 
                 if not success:
                     error_details = {

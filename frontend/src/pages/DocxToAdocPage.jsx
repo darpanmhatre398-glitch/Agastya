@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { FileText, Upload, X } from 'lucide-react'
+import { FileText, Upload, X, FileCode, ClipboardList } from 'lucide-react'
 import { useDropzone } from 'react-dropzone'
 import axios from 'axios'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,6 +14,7 @@ export default function DocxToAdocPage() {
   const [error, setError] = useState(null)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [processingStatus, setProcessingStatus] = useState('')
+  const [docType, setDocType] = useState('auto') // 'auto', 'proced', 'descript'
 
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length > 0) {
@@ -42,12 +43,13 @@ export default function DocxToAdocPage() {
     setError(null)
     setUploadProgress(0)
     setProcessingStatus('Preparing files...')
-    addLog(`Starting conversion of ${files.length} file(s)...`, 'info')
+    addLog(`Starting conversion of ${files.length} file(s) as ${docType === 'auto' ? 'auto-detect' : docType}...`, 'info')
 
     const formData = new FormData()
     files.forEach(file => {
       formData.append('files', file)
     })
+    formData.append('doc_type', docType)
 
     try {
       setProcessingStatus('Uploading files...')
@@ -104,10 +106,62 @@ export default function DocxToAdocPage() {
         <CardHeader>
           <CardTitle>Convert DOCX to AsciiDoc</CardTitle>
           <CardDescription>
-            Convert DOCX files to AsciiDoc format with metadata headers. The converter will automatically clean up artifacts and format the output correctly.
+            Convert DOCX files to S1000D AsciiDoc format. Choose between Procedural (step-by-step instructions) 
+            or Descriptive (general information) document types, or let the system auto-detect based on the DMC code.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Document Type Selection */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium">Document Type</label>
+            <div className="grid grid-cols-3 gap-3">
+              <button
+                type="button"
+                onClick={() => setDocType('auto')}
+                className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                  docType === 'auto' 
+                    ? 'border-primary bg-primary/10 text-primary' 
+                    : 'border-border hover:border-primary/50'
+                }`}
+              >
+                <FileText className="h-6 w-6" />
+                <span className="text-sm font-medium">Auto Detect</span>
+                <span className="text-xs text-muted-foreground text-center">Based on DMC code</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDocType('proced')}
+                className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                  docType === 'proced' 
+                    ? 'border-primary bg-primary/10 text-primary' 
+                    : 'border-border hover:border-primary/50'
+                }`}
+              >
+                <ClipboardList className="h-6 w-6" />
+                <span className="text-sm font-medium">Procedural</span>
+                <span className="text-xs text-muted-foreground text-center">Step-by-step tasks</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDocType('descript')}
+                className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                  docType === 'descript' 
+                    ? 'border-primary bg-primary/10 text-primary' 
+                    : 'border-border hover:border-primary/50'
+                }`}
+              >
+                <FileCode className="h-6 w-6" />
+                <span className="text-sm font-medium">Descriptive</span>
+                <span className="text-xs text-muted-foreground text-center">General information</span>
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {docType === 'auto' && '• Auto-detect will use info code from DMC (000 = Procedural, others = Descriptive)'}
+              {docType === 'proced' && '• Procedural includes: Preliminary Requirements, Main Procedure, Closeout Requirements sections'}
+              {docType === 'descript' && '• Descriptive includes: Standard metadata header with descriptive content structure'}
+            </p>
+          </div>
+
           <div 
             {...getRootProps()} 
             className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${

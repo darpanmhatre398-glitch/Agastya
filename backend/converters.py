@@ -76,30 +76,133 @@ def convert_to_11_part_dmc(base_code):
     
     return base_code, False
 
-def create_asciidoc_header(dmc):
-    """Create the S1000D metadata header for an AsciiDoc file."""
-    header = f""":dmc: DMC-{dmc}
-:dm-type: descript
-:tech-name: Sample System Widget Task
-:dm-title: Performing the Widget Calibration Procedure
-:revdate: 2025-09-02
+def create_procedural_header(dmc):
+    """Create the S1000D metadata header for a Procedural AsciiDoc file."""
+    header = f"""= My Procedural Data Module
+:dmc: DMC-{dmc}
+:dm-type: procedural
 :issue-number: 001
+:issue-date: 2023-10-26
+:tech-name: Comprehensive Converter Test Procedure
+:dm-title: Step-by-Step Guide
+:revdate: 2025-09-02
 :in-work: 00
 :lang: en
+:country-code: IN
 :security-classification: 01
 :responsible-partner-company: LNTDEFENCE
 :enterprise-code-rpc: 1671Y
 :originator-enterprise: LNTDEFENCE
 :enterprise-code-originator: 1671Y
 :applicability: All applicable units and serial numbers.
-:brex-dmc: DMC-S1000D-H-041-1-0-0301-00-A-022-A-D
+:brex-dmc: DMC-GSV-H-041-1-0-0301-00-A-022-A-D
+:reason-for-update: Initial draft for demonstration purposes.
+:s1000d-schema-base-path: http://www.s1000d.org/S1000D_4-2/xml_schema_flat/
+
+[[prelim_reqs]]
+== Preliminary Requirements
+
+[[required_conditions_pr]]
+=== Required Conditions
+
+[[required_persons_pr]]
+=== Required Persons
+
+[[required_tech_info_pr]]
+=== Required Technical Information
+
+[[required_equip_pr]]
+=== Required Support Equipment
+
+[[required_supplies_pr]]
+=== Required Supplies
+
+[[required_spares_pr]]
+=== Required Spares
+
+[[required_safety_pr]]
+=== Required Safety
+
+[[main_proc_steps]]
+== Main Procedure
+
+"""
+    return header
+
+def create_descriptive_header(dmc):
+    """Create the S1000D metadata header for a Descriptive AsciiDoc file."""
+    header = f""":dmc: DMC-{dmc}
+:dm-type: descript
+:issue-number: 001
+:dm-title: Sample Descriptive Module
+:revdate: 2025-09-02
+:in-work: 00
+:lang: en
+:country-code: IN
+:security-classification: 01
+:responsible-partner-company: LNTDEFENCE
+:enterprise-code-rpc: 1671Y
+:originator-enterprise: LNTDEFENCE
+:enterprise-code-originator: 1671Y
+:applicability: All applicable units and serial numbers.
+:brex-dmc: DMC-GSV-H-041-1-0-0301-00-A-022-A-D
 :reason-for-update: Initial draft for demonstration purposes.
 
 """
     return header
 
-def convert_docx_to_s1000d(input_path, output_path):
-    """Convert a DOCX file to S1000D AsciiDoc format."""
+def create_procedural_footer():
+    """Create the S1000D footer for a Procedural AsciiDoc file."""
+    footer = """
+
+[[closeout_reqs]]
+== Closeout Requirements
+
+[[closeout_conds_after]]
+=== Required Conditions After Job Completion
+
+"""
+    return footer
+
+def create_asciidoc_header(dmc, doc_type='descript'):
+    """Create the S1000D metadata header for an AsciiDoc file.
+    
+    Args:
+        dmc: The Data Module Code
+        doc_type: 'proced' for procedural, 'descript' for descriptive (default)
+    """
+    if doc_type == 'proced':
+        return create_procedural_header(dmc)
+    else:
+        return create_descriptive_header(dmc)
+
+def determine_doc_type_from_dmc(base_code, was_converted):
+    """Determine document type (proced/descript) based on info code in DMC.
+    
+    If info code is '000', it's procedural. Otherwise, it's descriptive.
+    """
+    if not was_converted:
+        return 'descript'
+    
+    parts = base_code.split('-')
+    if len(parts) >= 8:
+        # In 9-part DMC, info code is in position 8 (index 7)
+        info_code_part = parts[7] if len(parts) > 7 else ''
+        # Extract info code (first 3 chars, excluding variant)
+        info_code = info_code_part[:-1] if len(info_code_part) > 0 else ''
+        if info_code == '000':
+            return 'proced'
+    return 'descript'
+
+def convert_docx_to_s1000d(input_path, output_path, doc_type=None):
+    """Convert a DOCX file to S1000D AsciiDoc format.
+    
+    Args:
+        input_path: Path to the input DOCX file
+        output_path: Path for the output ADOC file
+        doc_type: 'proced' for procedural, 'descript' for descriptive, 
+                  None for auto-detect based on DMC info code
+    """
     try:
         # Run Pandoc conversion with explicit UTF-8 encoding
         result = subprocess.run(
@@ -115,18 +218,28 @@ def convert_docx_to_s1000d(input_path, output_path):
         # Get DMC from filename
         filename = os.path.splitext(os.path.basename(input_path))[0]
         base_code = filename.replace('DMC-', '', 1)
-        final_dmc, _ = convert_to_11_part_dmc(base_code)
+        final_dmc, was_converted = convert_to_11_part_dmc(base_code)
+        
+        # Determine document type
+        if doc_type is None:
+            # Auto-detect based on DMC info code
+            doc_type = determine_doc_type_from_dmc(base_code, was_converted)
         
         # Create header and clean content
-        header = create_asciidoc_header(final_dmc)
+        header = create_asciidoc_header(final_dmc, doc_type)
         cleaned_content = cleanup_adoc_content(content)
-        final_content = header + cleaned_content
+        
+        # Build final content
+        if doc_type == 'proced':
+            final_content = header + cleaned_content + create_procedural_footer()
+        else:
+            final_content = header + cleaned_content
         
         # Write output with UTF-8 encoding
         with open(output_path, 'w', encoding='utf-8', errors='replace') as f:
             f.write(final_content)
         
-        return True, "Conversion successful"
+        return True, f"Conversion successful (type: {doc_type})"
     except subprocess.CalledProcessError as e:
         return False, f"Pandoc conversion failed: {e}"
     except FileNotFoundError:
