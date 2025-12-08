@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { 
   Scissors, Split, FileSpreadsheet, FileEdit, TableProperties, Image, 
-  Search, CheckCircle, FileText, Code, FileType, Hash, ExternalLink
+  Search, CheckCircle, FileText, Code, FileType, Hash, ExternalLink, Globe, FileJson, BookOpen, List
 } from 'lucide-react'
 
 const allTools = [
@@ -79,6 +79,34 @@ const allTools = [
     featureKey: 'adoc_to_s1000d'
   },
   {
+    to: '/xml-to-html',
+    icon: Globe,
+    title: 'XML to HTML',
+    description: 'Convert S1000D XML to HTML using Saxon XSLT processor',
+    featureKey: 'xml_to_html'
+  },
+  {
+    to: '/html-to-json',
+    icon: FileJson,
+    title: 'HTML to JSON',
+    description: 'Extract HTML content into searchable JSON/JS data source',
+    featureKey: 'html_to_json'
+  },
+  {
+    to: '/pmc-builder',
+    icon: BookOpen,
+    title: 'PMC Builder',
+    description: 'Build S1000D Publication Module XML with drag-and-drop',
+    featureKey: 'pmc_builder'
+  },
+  {
+    to: '/toc-builder',
+    icon: List,
+    title: 'TOC Builder',
+    description: 'Generate JavaScript TOC from PM XML files using XSL transformation',
+    featureKey: 'toc_builder'
+  },
+  {
     to: '/pdf-to-docx',
     icon: FileType,
     title: 'PDF to DOCX',
@@ -86,11 +114,11 @@ const allTools = [
     featureKey: 'pdf_to_docx'
   },
   {
-    to: '/version2.0/index.html',
+    to: '/dmc-generator',
     icon: Hash,
-    title: 'DM Code Generator',
+    title: 'DMC Generator',
     description: 'Generate Data Module codes for S1000D documentation',
-    isExternal: true
+    featureKey: 'dmc_generator'
   }
 ]
 

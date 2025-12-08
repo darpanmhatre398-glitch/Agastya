@@ -1,0 +1,26 @@
+# Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+*.log
+uploads/
+temp_*
+*.pdf
+*.docx
+*.adoc
+*.xml
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

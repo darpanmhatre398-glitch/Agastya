@@ -7,7 +7,7 @@ export default function Header() {
         <div className="flex items-center gap-3 mb-2">
           <FileText className="h-8 w-8 text-primary" />
           <h1 className="text-3xl font-bold text-foreground">
-            Agastya <span className="text-sm font-normal text-muted-foreground ml-2">Beta v0.2</span>
+            Agastya <span className="text-sm font-normal text-muted-foreground ml-2">Beta v0.6</span>
           </h1>
         </div>
         <p className="text-muted-foreground text-sm">
@@ -15,20 +15,13 @@ export default function Header() {
         </p>
       </div>
       
-      <div className="flex gap-5">
-        <div className="text-center px-4 py-2 bg-background rounded-md border border-border">
-          <span className="block text-xs text-muted-foreground uppercase font-semibold tracking-wide mb-1">
-            Tools
-          </span>
-          <span className="block text-2xl font-bold text-foreground">7</span>
-        </div>
-        <div className="text-center px-4 py-2 bg-background rounded-md border border-border">
-          <span className="block text-xs text-muted-foreground uppercase font-semibold tracking-wide mb-1">
-            Active
-          </span>
-          <span className="block text-2xl font-bold text-green-500">●</span>
-        </div>
+      
+      <div className="text-sm mt-[-30px]">
+        <span className="glow-text bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent font-bold tracking-wide">
+          ✨ Developed By Darpan & Prathamesh ✨
+        </span>
       </div>
-    </div>
+      </div>
+
   )
 }

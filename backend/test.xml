@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dmodule>
+<dmodule xmlns:dc="http://www.purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.s1000d.org/S1000D_4-2/xml_schema_flat/descript.xsd">
+  <identAndStatusSection><dmAddress><dmIdent><dmCode modelIdentCode="S1KDTOOLS" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="000" infoCodeVariant="A" itemLocationCode="A"/><language languageIsoCode="en" countryIsoCode="IN"/><issueInfo issueNumber="001" inWork="00"/></dmIdent><dmAddressItems><issueDate year="2025" month="12" day="01"/><dmTitle><techName>Test Document</techName><infoName>Test Document</infoName></dmTitle></dmAddressItems></dmAddress><dmStatus issueType="new"><security securityClassification="01"/><responsiblePartnerCompany enterpriseCode="0000X"><enterpriseName>UNKNOWN RPC</enterpriseName></responsiblePartnerCompany><originator enterpriseCode="0000X"><enterpriseName>UNKNOWN RPC</enterpriseName></originator><applic><displayText><simplePara>All applicable conditions</simplePara></displayText></applic><brexDmRef><dmRef><dmRefIdent><dmCode modelIdentCode="S1000D" systemDiffCode="G" systemCode="04" subSystemCode="1" subSubSystemCode="0" assyCode="0301" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/></dmRefIdent></dmRef></brexDmRef><qualityAssurance><unverified/></qualityAssurance>
+      <reasonForUpdate id="rfu-def-0001" updateHighlight="1" updateReasonType="urt01"><simplePara>Initial issue or standard update.</simplePara></reasonForUpdate></dmStatus></identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara id="_section_1"><title>Section 1</title><para>This is a test.</para></levelledPara>
+    </description>
+  </content>
+</dmodule>

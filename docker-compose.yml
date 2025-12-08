@@ -9,6 +9,8 @@ services:
     volumes:
       - ./backend/config.json:/app/config.json
       - ./backend/uploads:/app/uploads
+      - ./backend/saxon:/app/saxon
+      - ./backend/ruby:/app/ruby
       - backend_temp:/tmp
     environment:
       - FLASK_ENV=production

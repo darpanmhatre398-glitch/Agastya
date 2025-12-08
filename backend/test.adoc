@@ -1,0 +1,6 @@
+= Test Document
+:doctype: book
+
+== Section 1
+
+This is a test.

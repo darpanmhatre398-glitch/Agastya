@@ -1035,10 +1035,12 @@ def convert_adoc_to_s1000d(input_path, output_path, ruby_backend_path):
         if not os.path.exists(ruby_backend_path):
             return False, f"Ruby backend file not found: {ruby_backend_path}"
         
-        # Build asciidoctor command
+        # Build asciidoctor command - use absolute path for Ruby backend
+        ruby_backend_abs = os.path.abspath(ruby_backend_path)
+        
         cmd = [
             'asciidoctor',
-            '-r', str(ruby_backend_path),
+            '-r', ruby_backend_abs,
             '-b', 's1000d',
             '-a', 'allow-uri-read',
             '-a', 'source-highlighter=none',
@@ -1047,14 +1049,18 @@ def convert_adoc_to_s1000d(input_path, output_path, ruby_backend_path):
             str(input_path)
         ]
         
-        # Run asciidoctor
+        # Run asciidoctor (use shell=True on Windows to find asciidoctor in PATH)
+        import platform
+        use_shell = platform.system() == 'Windows'
+        
         result = subprocess.run(
-            cmd,
+            cmd if not use_shell else ' '.join(f'"{c}"' if ' ' in c else c for c in cmd),
             capture_output=True,
             text=True,
             encoding='utf-8',
             errors='replace',
-            check=True
+            check=True,
+            shell=use_shell
         )
         
         # Check if output file was created

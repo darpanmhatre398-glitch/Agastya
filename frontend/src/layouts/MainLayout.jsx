@@ -5,19 +5,24 @@ import LogsPanel from '@/components/layout/LogsPanel'
 
 export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-5">
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="container mx-auto p-5 flex-1">
         <Header />
         <Navigation />
         
-        <div className="flex gap-5 bg-card border border-border rounded-lg shadow-sm overflow-hidden min-h-[calc(100vh-220px)]">
-          <main className="flex-1 p-8 overflow-y-auto max-h-[calc(100vh-220px)]">
+        <div className="flex gap-5 bg-card border border-border rounded-lg shadow-sm overflow-hidden min-h-[calc(100vh-260px)]">
+          <main className="flex-1 p-8 overflow-y-auto max-h-[calc(100vh-260px)]">
             <Outlet />
           </main>
           
           <LogsPanel />
         </div>
       </div>
+      
+      {/* Footer */}
+      <footer className="bg-card border-t border-border py-3 text-center text-sm text-muted-foreground">
+        Developed by <span className="font-semibold">Darpan</span> and <span className="font-semibold">Prathamesh</span>
+      </footer>
     </div>
   )
 }

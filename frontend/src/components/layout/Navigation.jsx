@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { 
   Home, Scissors, Split, FileSpreadsheet, FileEdit, TableProperties,
-  Image, Search, CheckCircle, FileText, Code, FileType, Settings 
+  Image, Search, CheckCircle, FileText, Code, FileType, Settings, Globe 
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +19,7 @@ const allNavItems = [
   { to: '/icn-validator', icon: CheckCircle, label: 'ICN Validator', featureKey: 'icn_validator' },
   { to: '/docx-to-adoc', icon: FileText, label: 'DOCX to ADOC', featureKey: 'docx_to_adoc' },
   { to: '/adoc-to-xml', icon: Code, label: 'ADOC to XML', featureKey: 'adoc_to_s1000d' },
+  { to: '/xml-to-html', icon: Globe, label: 'XML to HTML', featureKey: 'xml_to_html' },
   { to: '/pdf-to-docx', icon: FileType, label: 'PDF to DOCX', featureKey: 'pdf_to_docx' },
   { to: '/admin', icon: Settings, label: 'Admin', alwaysShow: true },
 ]
