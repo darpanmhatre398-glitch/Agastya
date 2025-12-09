@@ -6,6 +6,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   base: './', // Use relative paths for Electron
+  publicDir: 'public', // Explicitly set public directory
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -24,6 +25,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    copyPublicDir: true, // Ensure public folder is copied
     rollupOptions: {
       output: {
         manualChunks: {

@@ -192,3 +192,17 @@ logs/
 
 # Lock files
 *.lock
+
+# ==============================================================================
+# ELECTRON APP - BUNDLED RUNTIMES (Too large for git)
+# ==============================================================================
+
+# These are bundled in the installer only, not stored in git
+electron-app/backend/ruby-runtime/
+electron-app/backend/tools/java/
+electron-app/backend/tools/ruby/
+electron-app/backend/tools/pandoc/
+electron-app/dist/
+electron-app/backend/dist/
+electron-app/backend/build/
+electron-app/node_modules/

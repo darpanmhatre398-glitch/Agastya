@@ -5,11 +5,12 @@
  * - Serves React frontend
  */
 
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, protocol } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const LicenseManager = require('./license');
+const url = require('url');
 
 // Paths - Handle both dev and packaged scenarios
 const isDev = !app.isPackaged;
@@ -39,6 +40,19 @@ let licenseManager = null;
 
 const BACKEND_PORT = 8765;
 const FRONTEND_PORT = 3456;
+
+// ============================================================================
+// Icon Path Helper
+// ============================================================================
+
+// Get icon path for windows (works in both dev and production)
+function getIconPath() {
+  if (isDev) {
+    return path.join(__dirname, 'logo.ico');
+  }
+  // In production, icon is in resources/app directory
+  return path.join(appBasePath, 'resources', 'app', 'logo.ico');
+}
 
 // ============================================================================
 // Backend Process Management
@@ -175,6 +189,7 @@ function createActivationWindow() {
     height: 350,
     resizable: false,
     frame: true,
+    icon: getIconPath(),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -212,11 +227,37 @@ async function createMainWindow() {
     width: 1400,
     height: 900,
     show: false, // Don't show until ready
+    icon: getIconPath(),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      webSecurity: true
     }
+  });
+
+  // Intercept requests for static files and serve from correct location
+  mainWindow.webContents.session.webRequest.onBeforeRequest((details, callback) => {
+    const requestUrl = details.url;
+
+    // Handle version2.0 static files (DMC mapper data, libraries, etc.)
+    if (requestUrl.includes('/version2.0/')) {
+      // Extract the path after /version2.0/
+      const parts = requestUrl.split('/version2.0/');
+      if (parts.length > 1) {
+        const relativePath = parts[1].split('?')[0]; // Remove query params if any
+        const staticFilePath = path.join(frontendPath, 'version2.0', relativePath);
+
+        if (fs.existsSync(staticFilePath)) {
+          // Use proper file:// URL format with forward slashes
+          const fileUrl = `file:///${staticFilePath.replace(/\\/g, '/')}`;
+          callback({ redirectURL: fileUrl });
+          return;
+        }
+      }
+    }
+
+    callback({});
   });
 
   // Maximize window when ready
@@ -307,7 +348,15 @@ function setupIPC() {
 // App Lifecycle
 // ============================================================================
 
+// Register custom protocol for serving static files
 app.whenReady().then(() => {
+  // Register protocol to serve local files
+  protocol.registerFileProtocol('app-file', (request, callback) => {
+    const filePath = request.url.replace('app-file://', '');
+    const decodedPath = decodeURIComponent(filePath);
+    callback({ path: decodedPath });
+  });
+
   licenseManager = new LicenseManager(app);
   setupIPC();
 

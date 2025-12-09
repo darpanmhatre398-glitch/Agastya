@@ -14,14 +14,7 @@ export default function Header() {
           Professional Document Processing and Conversion Tools
         </p>
       </div>
-      
-      
-      <div className="text-sm mt-[-30px]">
-        <span className="glow-text bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent font-bold tracking-wide">
-          ✨ Developed By Darpan & Prathamesh ✨
-        </span>
-      </div>
-      </div>
+    </div>
 
   )
 }

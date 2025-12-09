@@ -120,8 +120,8 @@ export default function ExcelRenamerPage() {
           Excel-Based File Renamer
         </h2>
         <p className="text-muted-foreground">
-          Rename DOCX files based on an Excel mapping file. The Excel file should contain 
-          <strong> "Doc Name"</strong> (original filename without extension) and 
+          Rename DOCX files based on an Excel mapping file. The Excel file should contain
+          <strong> "Doc Name"</strong> (original filename without extension) and
           <strong> "DMC Code"</strong> (new filename). Preview changes before executing.
         </p>
       </div>
@@ -144,7 +144,7 @@ export default function ExcelRenamerPage() {
             Step 1: Upload Excel Mapping File (.xlsx or .xls)
           </CardTitle>
           <CardDescription>
-            Excel file should contain: <strong>"Doc Name"</strong> (original filename without .docx) 
+            Excel file should contain: <strong>"Doc Name"</strong> (original filename without .docx)
             and <strong>"DMC Code"</strong> (new filename)
           </CardDescription>
         </CardHeader>
@@ -322,22 +322,22 @@ export default function ExcelRenamerPage() {
                               const docxFile = docxFiles[index]
                               const docxNameWithoutExt = docxFile?.name.replace(/\.docx$/i, '').trim()
                               const excelDocName = excelEntry?.doc_name?.trim()
-                              
+
                               // Check exact match
                               const isExactMatch = excelEntry && docxFile && docxNameWithoutExt === excelDocName
-                              
+
                               // Check case-insensitive match
-                              const isCaseInsensitiveMatch = excelEntry && docxFile && 
+                              const isCaseInsensitiveMatch = excelEntry && docxFile &&
                                 docxNameWithoutExt.toLowerCase() === excelDocName.toLowerCase()
-                              
+
                               // Find if this file matches any Excel entry (not just by position)
-                              const matchesAnyExcel = docxFile && excelData.some(e => 
+                              const matchesAnyExcel = docxFile && excelData.some(e =>
                                 e.doc_name?.trim().toLowerCase() === docxNameWithoutExt.toLowerCase()
                               )
-                              
+
                               return (
-                                <tr 
-                                  key={index} 
+                                <tr
+                                  key={index}
                                   className={cn(
                                     index % 2 === 0 && "bg-accent/30",
                                     isExactMatch && "bg-green-500/10 border-l-4 border-green-500",
@@ -514,7 +514,7 @@ export default function ExcelRenamerPage() {
                       const isSuccess = item.status.includes('✓')
                       const isWarning = item.status.includes('⚠')
                       const isError = item.status.includes('✗')
-                      
+
                       return (
                         <tr key={index} className={cn(
                           isSuccess && "bg-green-950/20",
@@ -523,11 +523,18 @@ export default function ExcelRenamerPage() {
                         )}>
                           <td className="p-3 text-muted-foreground">{index + 1}</td>
                           <td className="p-3">
-                            <div className="flex items-center gap-2">
-                              <FileText className="h-4 w-4 flex-shrink-0" />
-                              <span className="font-mono text-xs break-all">
-                                {item.original_name || item.original || 'Unknown'}
-                              </span>
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2">
+                                <FileText className="h-4 w-4 flex-shrink-0" />
+                                <span className="font-mono text-xs break-all">
+                                  {item.original_name || item.original || 'Unknown'}
+                                </span>
+                              </div>
+                              {isWarning && item.base_name && (
+                                <div className="text-xs text-yellow-500 ml-6">
+                                  Looking for: "{item.base_name}" in Excel
+                                </div>
+                              )}
                             </div>
                           </td>
                           <td className="p-3 text-center text-lg">
@@ -542,9 +549,16 @@ export default function ExcelRenamerPage() {
                             </span>
                           </td>
                           <td className="p-3 text-center">
-                            <div className="flex items-center justify-center gap-2">
-                              {getStatusIcon(item.status)}
-                              <span className="text-xs">{item.status.replace(/[✓✗⚠]/g, '').trim()}</span>
+                            <div className="flex flex-col items-center justify-center gap-1">
+                              <div className="flex items-center gap-2">
+                                {getStatusIcon(item.status)}
+                                <span className="text-xs">{item.status.replace(/[✓✗⚠]/g, '').trim()}</span>
+                              </div>
+                              {isWarning && (
+                                <div className="text-xs text-muted-foreground italic">
+                                  Add to Excel to rename
+                                </div>
+                              )}
                             </div>
                           </td>
                         </tr>

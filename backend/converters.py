@@ -773,15 +773,34 @@ def generate_rename_preview_from_excel(excel_path, docx_folder):
         if doc_name and dmc_code and doc_name.lower() != 'nan' and dmc_code.lower() != 'nan':
             mapping[doc_name.lower()] = dmc_code
     
-    # Generate preview
+    # Generate preview with improved matching
     preview = []
+    unmatched_excel_entries = set(mapping.keys())
+    
     for filename in sorted(os.listdir(docx_folder)):
         if filename.lower().endswith('.docx'):
             base_name = os.path.splitext(filename)[0]
-            key = base_name.lower()
+            key = base_name.lower().strip()
             
+            # Try exact match first
+            matched_key = None
             if key in mapping:
-                dmc_code = mapping[key]
+                matched_key = key
+            else:
+                # Try fuzzy matching - check if any Excel entry is a substring or vice versa
+                for excel_key in mapping.keys():
+                    # Check if filenames match after removing common separators
+                    normalized_file = key.replace('_', '').replace('-', '').replace(' ', '')
+                    normalized_excel = excel_key.replace('_', '').replace('-', '').replace(' ', '')
+                    
+                    if normalized_file == normalized_excel:
+                        matched_key = excel_key
+                        break
+            
+            if matched_key:
+                dmc_code = mapping[matched_key]
+                unmatched_excel_entries.discard(matched_key)
+                
                 # Sanitize DMC code for filename
                 safe_dmc = "".join(c for c in dmc_code if c.isalnum() or c in (" ", "-", "_")).strip()
                 new_filename = f"{safe_dmc}.docx"
@@ -795,7 +814,9 @@ def generate_rename_preview_from_excel(excel_path, docx_folder):
                     'new_name': new_filename,
                     'dmc_code': dmc_code,
                     'exists': exists,
-                    'status': '✗ conflict' if exists else '✓ ready'
+                    'status': '✗ conflict' if exists else '✓ ready',
+                    'base_name': base_name,  # Add for debugging
+                    'matched_excel_key': matched_key  # Add for debugging
                 })
             else:
                 preview.append({
@@ -803,7 +824,9 @@ def generate_rename_preview_from_excel(excel_path, docx_folder):
                     'new_name': filename,
                     'dmc_code': '',
                     'exists': False,
-                    'status': '⚠ no_mapping'
+                    'status': '⚠ no_mapping',
+                    'base_name': base_name,  # Add for debugging
+                    'available_matches': list(mapping.keys())[:5] if len(mapping) <= 5 else []  # Show possible matches
                 })
     
     return {
